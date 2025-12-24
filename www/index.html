@@ -446,6 +446,24 @@ function logout() {
         });
 }
 
+function addLike(postId, currentLikes) {
+    if(!currentUser) {
+        showMessage('いいねするにはログインが必要です','error');
+        return;
+    }
+    
+    const newLikes = (Number(currentLikes) || 0) + 1;
+    postsRef.child(postId).update({likes: newLikes
+    })
+    .then(() => {
+        console.log("Like updated successfully");
+    })
+    .catch((error) => {
+        console.error("Firebase update error:", error);
+        showMessage('いいねの更新に失敗しました','error');
+    });
+}
+
 // 認証フォームのクリア
 function clearAuthForm() {
     $('#loginEmail').val('');
