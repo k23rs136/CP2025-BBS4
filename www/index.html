@@ -451,12 +451,24 @@ function addLike(postId, currentLikes) {
         showMessage('いいねするにはログインが必要です','error');
         return;
     }
-    
-    const newLikes = (Number(currentLikes) || 0) + 1;
-    postsRef.child(postId).update({likes: newLikes
+
+    postsRef.child(postId).once('value').then((snapshot) => {
+        const post = snapshot.val();
+        
+        if(post && post.userId === currentUser.uid) {
+            showMessage('自分の投稿にはいいねできません','error');
+            return;
+        }
+
+        const newLikes = (Number(currentLikes) || 0) + 1;
+        return postsRef.child(postId).update({
+            likes: newLikes
+        });
     })
-    .then(() => {
-        console.log("Like updated successfully");
+    .then((result) => {
+        if (result !== undefined) {
+            console.log("Like updated successfully");
+        }
     })
     .catch((error) => {
         console.error("Firebase update error:", error);
