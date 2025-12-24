@@ -164,6 +164,7 @@ function canEditPost(post) {
 function createPostElement(post) {
     // 編集権限を確認
     const canEdit = canEditPost(post);
+    const displayLikes = post.likes || 0;
     // 編集権限があれば、編集・削除機能を表示
     const actions = canEdit ? `
         <div class="post-actions">
@@ -176,6 +177,14 @@ function createPostElement(post) {
         </div>
     ` : '';
 
+    const likeSection = `
+        <div class="post-likes" style="margin-top: 10px; margin-bottom: 5px;">
+            <button class="btn-like" onclick="addLike('${post.id}',${displayLikes})"style="background: white; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; padding: 4px 12px; font-size: 0.9em; transition: 0.2s;">
+                ❤️<span id="like-count-${post.id}">${displayLikes}</span>
+            </button>
+        </div>
+    `;
+
     return `
         <div class="post" id="post-${post.id}">
             <div class="post-header">
@@ -184,6 +193,7 @@ function createPostElement(post) {
                 ${actions}
             </div>
             <div class="post-content">${escapeHtml(post.content)}</div>
+            ${likeSection}
             <div class="edit-form">
                 <textarea class="form-control" id="edit-${post.id}"></textarea>
                 <div class="button-group">
